@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser.min.js"></script>
+    <title>Exercício do Pássaro</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script>
+var config = { //configuração básica do jogo no Phaser
+    type: Phaser.AUTO,
+    width: 800,
+    height: 600,
+
+    scene: {
+        preload: preload,
+        create: create,
+        update: update
+    }
+};
+
+var game = new Phaser.Game(config);
+var passarinho; //variável que armazena os sprites do passarinho
+var som = new Audio('assets/bird-sound.wav'); //cria uma variavel com um objeto de audio para o som do pássaro
+
+function preload() { //carregar os recursos necessários para o jogo
+    this.load.image('bg', 'assets/bg_space.png'); //carrega a imagem de fundo
+    this.load.spritesheet('bird', 'assets/bird-green.png', { frameWidth: 75, frameHeight:75 }); //carrega os sprites do passarinho, sendo 75x75 cada sprite 
+}
+
+function create() { //inicializar os objetos e elementos do jogo após o carregamento 
+    this.add.image(400, 300, 'bg').setScale(1.2); //adiciona a imagem do fundo
+    passarinho = this.add.sprite(100, 300, 'bird').setScale(1.3); //adiciona os sprites do passarinho
+
+    //cria a animação de voo do passarinho
+    this.anims.create({
+        key: 'fly', //nome para chamar a animação
+        frames: this.anims.generateFrameNumbers('bird', { start: 0, end: 7 }), //define os quadros do sprite que serão exibidos com a animação
+        frameRate: 10, //velocidade da animação
+        repeat: -1 //repetição contínua
+    });
+
+        passarinho.anims.play('fly', true); //inicia a animação de movimento do passarinho
+        passarinho.ida = true; //inicia o movimento de ida no eixo x
+        passarinho.subida = true; //inicia o movimento de subida no eixo y
+}
+
+function update() { //mantém os elementos em movimento dentro do jogo
+    if (passarinho.x === 100) { //se o passarinho estiver na posição x = 100;
+        passarinho.setFlip(false, false); //mantém o sprite do passarinho sem estar invertido
+        passarinho.ida = true; //inicia o movimento de ida
+    }
+
+    if (passarinho.x < 700 && passarinho.ida === true) { //se o passarinho estiver antes da posição x = 700;
+        console.log("o passarinho começa a fazer o movimento de ida");
+        passarinho.x += 5; //adciona em 5 a posição x do passarinho
+    }
+
+    if (passarinho.x === 700) { //se o passarinho estiver em x = 700
+        passarinho.setFlip(true, false); //inverte horizontalmente o sprite do passarinho
+        passarinho.ida = false; //inicia o movimento de volta (ida = false) 
+    }
+
+    if (passarinho.x > 100 && passarinho.ida === false) { //se a posição x do passarinho for maior que 100;
+        console.log("o passarinho começa a voltar de fato");
+        passarinho.x -= 5; //subtrai em 5 a posição x do passarinho
+    }
+    //movimentação vertical do passarinho
+    if (passarinho.y === 100) { 
+        passarinho.subida = true; //inicia o movimento de subir em y
+    }
+
+    if (passarinho.y < 500 && passarinho.subida === true) { 
+        passarinho.y += 5; //move o passarinho em 5 para cima 
+    }
+
+    if (passarinho.y === 500) { 
+        passarinho.subida = false; //inicia o movimento de descer em y 
+    }
+
+    if (passarinho.y > 100 && passarinho.subida === false) {
+        passarinho.y -= 5; //move o passarinho em 5 para baixo 
+}};
+
+    var numeroRepeticao = 3;  //define o número de repetição para o som
+        function delay(ms) { //função para criar um atraso usando Promises
+        return new Promise(resolve => setTimeout(resolve, ms));} //retorna uma promise que é um objeto assíncrono que aguarda o tempo especificado                               
+        async function executarLoop() { // função assíncrona para reproduzir o som de forma controlada
+            for (var i = 1; i <= numeroRepeticao; i++) { //'for' utilizado para reproduzir o som as 3 vezes definidas com a variável numeroRepeticao
+                await delay(3000); // aguarda 3 segundos antes de tocar o som novamente
+                som.play(); //reproduz o som do passarinho
+            }
+
+        }
+        executarLoop(); //inicia o loop de reprodução
+</script>
+
+</body>
+</html>
+
+
